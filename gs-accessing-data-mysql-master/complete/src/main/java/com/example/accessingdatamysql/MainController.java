@@ -1,11 +1,9 @@
 package com.example.accessingdatamysql;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -49,17 +47,13 @@ public class MainController {
     @GetMapping("/all/{name:[a-zA-Z]+}")
     @ResponseBody
     User getUser(@PathVariable String name) {
-        List<User> list = new ArrayList();
-
-        do {
-            User user = new User(userRepository.findAll().iterator().next());
-            list.add( user);
+        Assert.hasText(name, "name can't be blank");
+        for (User u : userRepository.findAll()) {
+            if (name.equalsIgnoreCase(u.getName())) {
+                return u;
+            }
         }
-        while (userRepository.findAll().iterator().hasNext());
-
-        return list.stream()
-                .filter(User -> Objects.equals(User.getName(), name))
-                .findFirst().orElseGet(() -> null);
+        return null;
     }
 
 }
