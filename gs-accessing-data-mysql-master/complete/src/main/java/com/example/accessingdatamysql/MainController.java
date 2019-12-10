@@ -1,29 +1,38 @@
 package com.example.accessingdatamysql;
 
+import org.apache.tomcat.jni.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/demo", method = {RequestMethod.GET})
+@RequestMapping(path = "/demo")
+//        , method = {RequestMethod.GET})
 public class MainController {
     @Autowired
     private UserRepository userRepository;
 
     @PostMapping(path = "/add/{name}_{email}")
     public @ResponseBody
-    String addNewUser(@PathVariable String name, @PathVariable String email) {
+    String addNewUser(@PathVariable String name, @PathVariable String email, @RequestParam ("file") MultipartFile file) {
+
 
         User n = new User();
         n.setName(name);
         n.setEmail(email);
-      //  n.setData(data);
+        try {
+            n.setData(file.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         userRepository.save(n);
         return "Saved name= " + name + " email= " + email;
     }
@@ -48,7 +57,8 @@ public class MainController {
         return userRepository.findById(id);
 
     }
-//
+
+    //
     @GetMapping("/all/{name:[a-zA-Z]+}")
     @ResponseBody
     List<User> getUser(@PathVariable("name") String name) {
@@ -62,7 +72,8 @@ public class MainController {
 //        return userRepository.znajdzPoImieniu(name);
 
     }
-//
+
+    //
     @GetMapping("/all/{email:.+@.+}")
     @ResponseBody
     User getUserByEmail(@PathVariable("email") String email) {
@@ -70,10 +81,11 @@ public class MainController {
 
         return userRepository.findByEmail(email);
     }
+
     @GetMapping("{name}")
     @ResponseBody
     List<User> sortedNamed(@PathVariable String name) {
-       return userRepository.findByNameOrderById(name);
+        return userRepository.findByNameOrderById(name);
     }
 }
 
