@@ -12,8 +12,18 @@ public class User {
 
     private String email;
 
+    @Column(length = 1000, columnDefinition = "Text")
+    private String image;
     @Lob
     private byte[] data;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public byte[] getData() {
         return data;
@@ -27,7 +37,7 @@ public class User {
         this.id = id;
         this.name = name;
         this.email = email;
-		this.data = data;
+        this.data = data;
     }
 
     public User() {

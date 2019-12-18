@@ -1,15 +1,13 @@
 package com.example.accessingdatamysql;
 
-import org.apache.tomcat.jni.File;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +18,22 @@ public class MainController {
     @Autowired
     private UserRepository userRepository;
 
+    public String addUser(String name, String email, String image, String data){
+    User m = new User();
+m.setName(name);
+m.setEmail(email);
+m.setImage(image);
+
+        try {
+            m.setData(Files.readAllBytes(Paths.get(data)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        userRepository.save(m);
+return "dodano uzytkownika";
+
+}
     @PostMapping(path = "/add/{name}_{email}")
     public @ResponseBody
     String addNewUser(@PathVariable String name, @PathVariable String email, @RequestParam ("file") MultipartFile file) {
@@ -37,7 +51,7 @@ public class MainController {
         return "Saved name= " + name + " email= " + email;
     }
 
-    @DeleteMapping(path = "/delete")
+    @GetMapping(path = "/delete")
     public @ResponseBody
     String deleted(@RequestParam Integer id) {
         userRepository.deleteById(id);
@@ -46,7 +60,7 @@ public class MainController {
 
     @GetMapping(path = "/all")
     public @ResponseBody
-    Iterable<User> getAllUsers() {
+    List<User> getAllUsers() {
 
         return userRepository.findAll();
     }

@@ -30,13 +30,34 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>mpr-v8</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>com.vaadin</groupId>
-			<artifactId>
-				vaadin-spring-boot-starter
-			</artifactId>
-			<version>13.0.13</version>
+			<artifactId>vaadin-server</artifactId>
+			<version>8.9.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jsoup</groupId>
+					<artifactId>jsoup</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.gwt</groupId>
+					<artifactId>gwt-elemental</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-themes</artifactId>
+			<version>8.9.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -68,12 +89,25 @@
 			<plugin>
 				<groupId>com.vaadin</groupId>
 				<artifactId>vaadin-maven-plugin</artifactId>
-				<version>${vaadin.version}</version>
+				<version>8.9.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>resources</goal>
+							<goal>update-widgetset</goal>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.vaadin</groupId>
+				<artifactId>flow-maven-plugin</artifactId>
+				<version>2.0.7</version>
 				<executions>
 					<execution>
 						<goals>
 							<goal>prepare-frontend</goal>
-							<goal>build-frontend</goal>
 						</goals>
 					</execution>
 				</executions>
